@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quote Generator</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+        }
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        #quote-box {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 600px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        #quotes {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+        #author {
+            font-size: 1.2em;
+            font-style: italic;
+        }
+        #newQuotes {
+            margin-top: 20px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background: #4caf50;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        #newQuotes:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Random Quote Generator</h1>
+    <div id="quote-box">
+        <div id="quotes">Click the button to generate a quote</div>
+        <div id="author"></div>
+        <button id="newQuotes">New Quote</button>
+    </div>
+
+    <script>
+        let realData = [];
+        let quotesData = {};
+        const quotes = document.getElementById("quotes");
+        const author = document.getElementById("author");
+        const newQuotes = document.getElementById("newQuotes");
+
+        const getNewQuotes = () => {
+            let random = Math.floor(Math.random() * realData.length);
+            quotesData = realData[random];
+            quotes.innerHTML = `"${quotesData.text}"`;
+            quotesData.author == null
+                ? (author.innerHTML = "Unknown")
+                : (author.innerHTML = `- ${quotesData.author}`);
+        };
+
+        const getQuotes = async () => {
+            const apiUrl = "https://type.fit/api/quotes";
+            try {
+                let data = await fetch(apiUrl);
+                realData = await data.json();
+                getNewQuotes();
+            } catch (err) {
+                quotes.innerHTML = "Failed to fetch quotes. Please try again.";
+            }
+        };
+
+        newQuotes.addEventListener("click", getNewQuotes);
+        getQuotes();
+    </script>
+</body>
+</html>
